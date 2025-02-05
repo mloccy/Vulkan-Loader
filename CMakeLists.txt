@@ -17,8 +17,15 @@
 # limitations under the License.
 # ~~~
 cmake_minimum_required(VERSION 3.22.1)
+include (cmake/HunterGate.cmake)
+HunterGate(
+    URL "https://codeload.github.com/mloccy/hunter/tar.gz/refs/tags/v0.25.10"
+    SHA1 "8a5345c219389b443706f47137d13150a6ae1a7c")
 
 project(VULKAN_LOADER VERSION 1.4.307 LANGUAGES C)
+
+hunter_add_package(Vulkan-Headers)
+find_package(VulkanHeaders CONFIG REQUIRED)
 
 option(CODE_COVERAGE "Enable Code Coverage" OFF)
 if (CODE_COVERAGE)
