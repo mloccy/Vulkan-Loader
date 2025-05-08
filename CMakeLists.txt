@@ -18,7 +18,15 @@
 # ~~~
 cmake_minimum_required(VERSION 3.22.1)
 
-project(VULKAN_LOADER VERSION 1.4.307 LANGUAGES C)
+include ("cmake/HunterGate.cmake")
+HunterGate(
+    URL "https://github.com/mloccy/hunter/archive/refs/tags/v0.25.14.tar.gz"
+    SHA1 "65ce1bb9e01d55585e1ae47fd7c56453d279c994")
+
+project(VULKAN_LOADER VERSION 1.4.307 LANGUAGES C CXX)
+
+hunter_add_package(Vulkan-Headers)
+
 
 option(CODE_COVERAGE "Enable Code Coverage" OFF)
 if (CODE_COVERAGE)
@@ -120,6 +128,7 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|DragonFly|GNU")
     if(BUILD_WSI_XCB_SUPPORT)
         pkg_check_modules(XCB REQUIRED QUIET IMPORTED_TARGET xcb)
         pkg_get_variable(XCB_INCLUDE_DIRS xcb includedir)
+
         target_compile_definitions(platform_wsi INTERFACE VK_USE_PLATFORM_XCB_KHR)
         target_include_directories(platform_wsi INTERFACE ${XCB_INCLUDE_DIRS})
     endif()
