@@ -20,13 +20,17 @@ cmake_minimum_required(VERSION 3.22.1)
 
 include ("cmake/HunterGate.cmake")
 HunterGate(
-    URL "https://github.com/mloccy/hunter/archive/refs/tags/v0.25.14.tar.gz"
-    SHA1 "65ce1bb9e01d55585e1ae47fd7c56453d279c994")
+    URL "https://github.com/mloccy/hunter/archive/refs/tags/v0.25.18.tar.gz"
+    SHA1 "a651c30737249b1536c228715a48a7fa04dd605c")
 
 project(VULKAN_LOADER VERSION 1.4.307 LANGUAGES C CXX)
 
 hunter_add_package(Vulkan-Headers)
 
+if (UNIX AND NOT APPLE)
+    hunter_add_package(x11)
+    hunter_add_package(xrandr)
+endif()
 
 option(CODE_COVERAGE "Enable Code Coverage" OFF)
 if (CODE_COVERAGE)
@@ -126,14 +130,14 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Linux|BSD|DragonFly|GNU")
     find_package(PkgConfig REQUIRED QUIET) # Use PkgConfig to find Linux system libraries
 
     if(BUILD_WSI_XCB_SUPPORT)
-        pkg_check_modules(XCB REQUIRED QUIET IMPORTED_TARGET xcb)
+        pkg_check_modules(xcb REQUIRED IMPORTED_TARGET xcb)
         pkg_get_variable(XCB_INCLUDE_DIRS xcb includedir)
 
         target_compile_definitions(platform_wsi INTERFACE VK_USE_PLATFORM_XCB_KHR)
         target_include_directories(platform_wsi INTERFACE ${XCB_INCLUDE_DIRS})
     endif()
     if(BUILD_WSI_XLIB_SUPPORT)
-        pkg_check_modules(X11 REQUIRED QUIET IMPORTED_TARGET x11)
+        pkg_check_modules(x11 REQUIRED QUIET IMPORTED_TARGET x11)
         pkg_get_variable(XLIB_INCLUDE_DIRS x11 includedir)
         target_compile_definitions(platform_wsi INTERFACE VK_USE_PLATFORM_XLIB_KHR)
         target_include_directories(platform_wsi INTERFACE ${XLIB_INCLUDE_DIRS})
